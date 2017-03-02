@@ -167,3 +167,17 @@ exists("a_variable_name")
 a_variable_name
 ```
 
+## Environment Access
+
+```{r}
+r_envirs <- function(ini_env) {
+  print(environmentName(ini_env))
+  parent_env <- parent.env(ini_env)
+  if (environmentName(parent_env) != environmentName(emptyenv())) {
+    r_envirs(parent_env)
+  }
+}
+
+r_envirs(globalenv())
+```
+
