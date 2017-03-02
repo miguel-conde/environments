@@ -1,0 +1,155 @@
+---
+title: "Expressions"
+author: "Miguel Conde"
+date: "2 de marzo de 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+## Expressions
+
+"Encapsulated operations that can be executed in R"
+
+An R **expression** *vector* is **a list of calls, symbols etc.**
+
+### Code -> `quote()` -> call
+Create a call from code -> `quote()`
+Execute the call -> `eval()`
+
+**Call**: *an unevaluated function call*, that is, an **unevaluated expression**
+
+```{r}
+call_2_plus_2 <- quote(2 + 2)
+eval(call_2_plus_2)
+```
+
+```{r}
+class(call_2_plus_2)
+```
+
+```{r}
+str(call_2_plus_2)
+```
+
+```{r}
+call_2_plus_2
+```
+
+### String -> `parse()` -> expression -> `deparse()` -> string
+
+Transform a string into an expression -> `parse()`
+Execute the expression -> `eval()` (also)
+```{r}
+str_2_plus_2 <- "2 + 2"
+expr_2_plus_2 <- parse(text = str_2_plus_2)
+eval(expr_2_plus_2)
+```
+
+```{r}
+class(expr_2_plus_2)
+```
+
+```{r}
+str(expr_2_plus_2)
+```
+
+```{r}
+expr_2_plus_2
+```
+
+
+Transform a expression into a string -> `deparse()`
+```{r}
+deparse(expr_2_plus_2)
+```
+
+### Accessing and modifying calls and expressions content
+
+```{r}
+# Let's build a call object from code
+sum_expr <- quote(sum(1, 5))
+eval(sum_expr)
+```
+
+We can access the call content like a list:
+```{r}
+sum_expr[[1]]
+sum_expr[[2]]
+sum_expr[[3]]
+```
+
+And modify it:
+```{r}
+sum_expr[[1]] <- quote(paste0)
+sum_expr[[2]] <- quote(4)
+sum_expr[[3]] <- quote(6)
+eval(sum_expr)
+```
+
+Now with a expression:
+```{r}
+expr_2_plus_2
+```
+
+```{r}
+expr_2_plus_2[[1]]
+expr_2_plus_2[[2]]
+expr_2_plus_2[[3]]
+```
+
+
+
+### Composing calls with `call()`
+
+```{r}
+sum_40_50_expr <- call("sum", 40, 50)
+sum_40_50_expr
+```
+
+
+```{r}
+eval(sum_40_50_expr)
+```
+
+
+### Capturing calls with `match.call()`
+```{r}
+return_expression <- function(...){
+  match.call()
+  }
+
+return_expression(2, col = "blue", FALSE)
+```
+
+### Manipulating calls
+
+```{r}
+first_arg <- function(...){
+  expr <- match.call()
+  
+  first_arg_expr <- expr[[2]]
+  first_arg <- eval(first_arg_expr)
+  
+  if(is.numeric(first_arg))
+  {
+    paste("The first argument is", first_arg)
+  } 
+  else 
+  {
+    "The first argument is not numeric."
+  }
+}
+```
+
+```{r}
+first_arg(2, 4, "seven", FALSE)
+```
+
+```{r}
+first_arg("two", 4, "seven", FALSE)
+```
+
+
