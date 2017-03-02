@@ -16,6 +16,7 @@ knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
 An R **expression** *vector* is **a list of calls, symbols etc.**
 
 ### Code -> `quote()` -> call
+
 Create a call from code -> `quote()`
 Execute the call -> `eval()`
 

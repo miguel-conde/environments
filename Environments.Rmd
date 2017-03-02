@@ -1,0 +1,169 @@
+---
+title: "Environments"
+author: "Miguel Conde"
+date: "2 de marzo de 2017"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE, message = FALSE, warning = FALSE)
+```
+
+## Intro
+
+*Environments* formalize **relationships between variable names and values**. 
+
+When you enter x <- 55 into the R console what you’re saying is: assign the value of 55 to a variable called x, and store this assignment in the global environment. The global environment is therefore where most R users do most of their programming and analysis.
+
+### Creating environments with `new.env()`
+```{r}
+my_new_env <- new.env()
+```
+
+### Assigning pairs variables / values in an environment and retrieving them
+
+Like a list:
+```{r}
+my_new_env$x <- 4
+my_new_env$x
+```
+
+With `assign()` and `get()`:
+```{r}
+assign("y", 9, envir = my_new_env)
+get("y", envir = my_new_env)
+```
+
+### Checking variables in an environment with `ls()` and `exists()`
+```{r}
+ls(my_new_env)
+```
+
+```{r}
+exists("x", envir = my_new_env)
+```
+
+```{r}
+exists("z", envir = my_new_env)
+```
+
+### Removing pairs variables / values in an environment with `rm()`
+```{r}
+rm(y, envir = my_new_env)
+exists("y", envir = my_new_env)
+```
+
+```{r}
+my_new_env$y
+```
+
+## Environments
+
+Environments are organized in **parent/child relationships** such that every
+environment keeps track of its parent, but parents are unaware of which
+environments are their children.
+
+You can see the **parents** of the global environment using the `search()` function:
+```{r}
+search()
+```
+
+As you can see `r search()[2]` is the parent of .GlobalEnv, and `r search()[3]` is parent of `r search()[2]`, and so on. In general the parent of .GlobalEnv is always the last package that was loaded using `library()`. 
+
+Notice that after we load the ggplot2 package, that package becomes the parent of .GlobalEnv:
+
+```{r}
+library(ggplot2)
+search()
+```
+
+### Execution Environments
+Although there may be several cases where you need to create a new environment
+using `new.env()`, you will more often create new environments whenever
+you execute functions. An execution environment is an environment that
+exists temporarily within the scope of a function that is being executed.
+
+```{r}
+x <- 10
+
+my_func <- function(){
+  x <- 5
+  return(x)
+}
+
+my_func()
+```
+First the name `x` is bring assigned the value 10 *in the global environment*.
+
+Then the name `my_func` is being assigned the value of the function `function(){x <- 5};return(x)}` *in the global environment*.
+
+When `my_func()` is executed, a *new environment*, the
+*execution environment*, is created **as a child** of the global environment.
+
+This execution environment only exists while `my_func()` is running. 
+
+Inside of the execution environment the name `x` is assigned the value `5`.
+
+When `return()` is executed **it looks first in the execution environment** for a value that is assigned to x. Then the value 5 is returned.
+
+In contrast to the situation above, take a look at this variation:
+```{r}
+x <- 10
+
+another_func <- function(){
+  return(x)
+}
+
+another_func()
+```
+
+In this situation the execution environment inside of `another_func()` does
+not contain an assignment for the name `x`, **so R looks for an assignment in
+the parent environment of the execution environment** which is the global
+environment. Since x is assigned the value 10 in the global environment 10 is
+returned.
+
+### Complex assignment operator `<<-`
+
+The complex assignment operator can be used to re-assign or even create name-value bindings in the parent environment (e.g., the global environment) from within a child environment (e.g., an execution environment).
+
+```{r}
+x <- 10
+x
+```
+Re-assign:
+
+```{r}
+assign1 <- function(){
+  x <<- "Wow!"
+}
+
+assign1()
+
+x
+```
+
+Create:
+```{r}
+a_variable_name
+```
+
+Error in eval(expr, envir, enclos): object 'a_variable_name' not found
+```{r}
+exists("a_variable_name")
+```
+
+```{r}
+assign2 <- function(){
+  a_variable_name <<- "Magic!"
+}
+
+assign2()
+
+exists("a_variable_name")
+```
+
+```{r}
+a_variable_name
+```
+
