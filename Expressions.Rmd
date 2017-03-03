@@ -71,34 +71,37 @@ deparse(expr_2_plus_2)
 
 ```{r}
 # Let's build a call object from code
-sum_expr <- quote(sum(1, 5))
-eval(sum_expr)
+sum_call <- quote(sum(1, 5))
+eval(sum_call)
 ```
 
 We can access the call content like a list:
 ```{r}
-sum_expr[[1]]
-sum_expr[[2]]
-sum_expr[[3]]
+sum_call[[1]]
+sum_call[[2]]
+sum_call[[3]]
 ```
 
 And modify it:
 ```{r}
-sum_expr[[1]] <- quote(paste0)
-sum_expr[[2]] <- quote(4)
-sum_expr[[3]] <- quote(6)
-eval(sum_expr)
+sum_call[[1]] <- quote(paste0)
+sum_call[[2]] <- quote(4)
+sum_call[[3]] <- quote(6)
+eval(sum_call)
 ```
 
 Now with a expression:
 ```{r}
+str_2_plus_2 <- "2 + 2"
+expr_2_plus_2 <- parse(text = str_2_plus_2)
 expr_2_plus_2
 ```
 
 ```{r}
 expr_2_plus_2[[1]]
-expr_2_plus_2[[2]]
-expr_2_plus_2[[3]]
+expr_2_plus_2[[1]][1]
+expr_2_plus_2[[1]][2]
+expr_2_plus_2[[1]][3]
 ```
 
 
