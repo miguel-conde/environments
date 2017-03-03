@@ -62,9 +62,9 @@ expr_2_plus_2
 ```
 
 
-Transform a expression into a string -> `deparse()`
+Transform a call into a string -> `deparse()`
 ```{r}
-deparse(expr_2_plus_2)
+deparse(call_2_plus_2)
 ```
 
 ### Accessing and modifying calls and expressions content
