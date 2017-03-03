@@ -1,2 +1,2 @@
 # environments
-Exploring environments in R
+Exploring expressions, environments and scoping rules in R
